@@ -1,0 +1,10 @@
+[Unit]
+Description=Cloud Office PostgreSQL and MinIO backup
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/cloud-office
+ExecStart=/opt/cloud-office/ops/backup/backup.sh
+User=root

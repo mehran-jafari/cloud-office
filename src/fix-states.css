@@ -1,0 +1,1 @@
+.session-key--muted{display:flex;align-items:center;justify-content:center;min-height:66px;border:1px dashed rgba(143,130,255,.35);border-radius:18px;color:#aeb4c8}.chat-ready{color:#39d7bb}.chat-waiting{color:#f0b35b}.conference-message.is-pending{opacity:.65;border-style:dashed}.conference-compose textarea:disabled{opacity:.7;cursor:not-allowed}

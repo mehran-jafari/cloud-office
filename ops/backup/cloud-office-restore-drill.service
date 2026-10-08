@@ -1,0 +1,11 @@
+[Unit]
+Description=Cloud Office staging restore drill
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/cloud-office
+EnvironmentFile=-/opt/cloud-office/.env
+ExecStart=/opt/cloud-office/ops/backup/restore-drill.sh
+User=root
