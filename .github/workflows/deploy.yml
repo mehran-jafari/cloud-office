@@ -26,6 +26,13 @@ jobs:
     name: Build React App
     runs-on: ubuntu-latest
 
+    # متغیرهای محیطی مورد استفاده هنگام Build کردن React
+    env:
+      # آدرس Backend واقعی پروژه در Production
+      # Vite این مقدار را هنگام pnpm build
+      # داخل نسخه نهایی React قرار می‌دهد.
+      VITE_API_URL: https://cloud-office-backend.onrender.com/api
+
     steps:
       # دریافت کد پروژه از Repository
       - name: Checkout repository
