@@ -8,6 +8,7 @@ export default defineConfig(({ mode }) => {
   const backendWsTarget = backendTarget.replace(/^http/, 'ws');
 
   return {
+    base: '/cloud-office/',
     plugins: [react()],
     server: {
       host: '0.0.0.0',
