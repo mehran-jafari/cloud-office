@@ -1,0 +1,84 @@
+name: Deploy Frontend to GitHub Pages
+
+on:
+  # هر بار که کدی روی main پوش می‌شود، Deploy اجرا می‌شود.
+  push:
+    branches:
+      - main
+
+  # اجازه می‌دهد Workflow را دستی هم از GitHub اجرا کنیم.
+  workflow_dispatch:
+
+# دسترسی‌هایی که GitHub Actions برای انتشار روی Pages نیاز دارد.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# اگر چند Push پشت سر هم انجام شود،
+# فقط آخرین Deploy را ادامه می‌دهیم.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build React App
+    runs-on: ubuntu-latest
+
+    steps:
+      # دریافت کد پروژه از Repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # نصب pnpm با همان نسخه‌ای که پروژه استفاده می‌کند.
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.12.1
+
+      # نصب Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      # نصب Dependencyها
+      # frozen-lockfile یعنی GitHub اجازه نمی‌دهد
+      # pnpm-lock.yaml را خودسرانه تغییر دهد.
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # بررسی TypeScript
+      - name: Typecheck
+        run: pnpm typecheck
+
+      # ساخت نسخه Production
+      - name: Build frontend
+        run: pnpm build
+
+      # آماده‌سازی GitHub Pages
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      # تبدیل dist به Artifact قابل انتشار
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      # انتشار Artifact روی GitHub Pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
